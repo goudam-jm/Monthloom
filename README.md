@@ -4,9 +4,9 @@ A small, dependency-free calendar library with an optional vanilla JavaScript wi
 
 ## Interactive demo
 
-[Explore the GitHub Pages playground](https://goudam-jm.github.io/calendarJS/): try the browser widget, configure headless grids, add months to dates, and localize weekday labels. Every example includes code that follows its controls.
+[Explore the GitHub Pages playground](https://goudam-jm.github.io/Monthloom/): try the browser widget, configure headless grids, add months to dates, and localize weekday labels. Every example includes code that follows its controls.
 
-Build locally with `npm run build:pages`, then serve `_site/` using a static HTTP server. The demo bundles the repository's source modules and requires no npm publication or CDN. `.github/workflows/pages.yml` deploys changes from `master` and the initial `modernize-package` branch; once the PR is merged, remove the bootstrap branch from the workflow. GitHub Pages must use GitHub Actions as its build source, with the `github-pages` environment allowing the deployment branch.
+Build locally with `npm run build:pages`, then serve `_site/` using a static HTTP server. The demo bundles the repository's source modules and requires no npm publication or CDN. `.github/workflows/pages.yml` deploys changes from `master`. GitHub Pages must use GitHub Actions as its build source, with the `github-pages` environment allowing the deployment branch.
 
 ## Install
 

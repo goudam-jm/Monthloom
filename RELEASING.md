@@ -1,6 +1,6 @@
 # Releasing Monthloom
 
-The npm package is `monthloom`. The source repository remains `goudam-jm/calendarJS`.
+The npm package is `monthloom`. The source repository is `goudam-jm/Monthloom`.
 
 ## First publish
 
@@ -25,7 +25,7 @@ The initial 0.1.0 release can be bootstrapped manually from the PR branch once i
 In the npm package settings, add a GitHub Actions trusted publisher:
 
 - GitHub owner: `goudam-jm`
-- Repository: `calendarJS`
+- Repository: `Monthloom`
 - Workflow filename: `publish.yml`
 - Environment: leave blank (the workflow does not use a named environment)
 - Allow direct publishing with `npm publish`

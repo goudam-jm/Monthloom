@@ -1,7 +1,7 @@
 name: Deploy demo to GitHub Pages
 on:
   push:
-    branches: [master, modernize-package]
+    branches: [master]
     paths:
       - docs/**
       - src/**
