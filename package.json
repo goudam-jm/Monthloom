@@ -34,7 +34,8 @@
     "test": "node --test",
     "check": "npm run build && npm test",
     "prepack": "npm run build",
-    "prepublishOnly": "npm run check"
+    "prepublishOnly": "npm run check",
+    "build:pages": "node scripts/build-pages.js"
   },
   "repository": {
     "type": "git",
@@ -53,5 +54,6 @@
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"
-  }
+  },
+  "homepage": "https://goudam-jm.github.io/calendarJS/"
 }

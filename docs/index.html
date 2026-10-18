@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Explore Monthloom: a dependency-free JavaScript calendar library with month grids, localization, date arithmetic, and an optional browser widget.">
+  <title>Monthloom — calendars, your way</title>
+  <link rel="stylesheet" href="./lib/styles.css">
+  <link rel="stylesheet" href="./styles.css">
+  <script type="module" src="./demo.js"></script>
+</head>
+<body>
+  <header class="site-header wrap"><a class="brand" href="#">◧ Monthloom<span class="version">0.1.0</span></a><nav aria-label="Main"><a href="#playground">Playground</a><a href="https://github.com/goudam-jm/calendarJS">GitHub ↗</a></nav></header>
+  <main class="wrap">
+    <section class="hero">
+      <p class="eyebrow">A SMALL LIBRARY FOR THE DAYS AHEAD</p>
+      <h1>Your interface.<br>Your calendar.</h1>
+      <p class="intro">Build from a month of data, drop in a calendar, or just move a date forward. Monthloom handles the days. You decide what they look like.</p>
+      <div class="hero-footer"><a class="primary" href="#playground">Explore the playground ↓</a><span>Zero runtime dependencies · ESM + CommonJS · TypeScript types</span></div>
+    </section>
+    <div class="section-heading" id="playground"><p class="eyebrow">THE PLAYGROUND</p><p>Real library calls. Change something and see what happens.</p></div>
+    <section class="example" aria-labelledby="widget-title">
+      <div class="example-copy"><p class="number">01 / THE DROP-IN</p><h2 id="widget-title">A calendar in a few lines.</h2><p>Mount a standalone widget. Browse months and select a date. Each instance keeps its own navigation state.</p>
+        <div class="controls"><label>Language<select id="widget-locale"><option value="en-US">English (US)</option><option value="fr-FR">Français</option><option value="de-DE">Deutsch</option><option value="ja-JP">日本語</option></select></label><label>Week starts<select id="widget-week"><option value="0">Sunday</option><option value="1">Monday</option><option value="6">Saturday</option></select></label></div>
+        <button id="widget-today" class="text-button" type="button">Return to this month ↗</button>
+        <pre><code id="widget-code"></code></pre>
+      </div>
+      <div class="preview widget-preview"><p class="preview-label">LIVE WIDGET</p><div id="widget"></div><p class="selection" id="selection" aria-live="polite">Select a day to try the callback.</p></div>
+    </section>
+    <section class="example" aria-labelledby="grid-title">
+      <div class="example-copy"><p class="number">02 / THE BUILDING BLOCKS</p><h2 id="grid-title">Bring your own interface.</h2><p>Get an array of weeks for a custom view, server rendering, or a framework component. No DOM required.</p>
+        <div class="controls"><label>Month<input id="grid-month" type="month" value="2024-02" min="0001-01" max="9999-12" required></label><label>Week starts<select id="grid-week"><option value="1">Monday</option><option value="0">Sunday</option><option value="6">Saturday</option></select></label></div>
+        <div class="checks"><label><input id="grid-fixed" type="checkbox"> Always six weeks</label><label><input id="grid-outside" type="checkbox"> Include adjacent days</label></div>
+        <pre><code id="grid-code"></code></pre>
+      </div>
+      <div class="preview"><div class="preview-top"><p class="preview-label">CUSTOM HEADLESS VIEW</p><span id="grid-count"></span></div><div id="grid-view"></div><details><summary>Inspect the returned data</summary><pre id="grid-data"></pre></details></div>
+    </section>
+    <section class="example" aria-labelledby="math-title">
+      <div class="example-copy"><p class="number">03 / THE EVERYDAY UTILITY</p><h2 id="math-title">January 31 + one month?</h2><p>Land on a real day in the target month. Month arithmetic clamps to the last valid day, handles year boundaries, and leaves your original date untouched.</p>
+        <div class="controls"><label>Start date<input id="math-date" type="date" value="2024-01-31" min="0001-01-01" max="9999-12-31" required></label><label>Months to add<input id="math-amount" type="number" value="1" min="-119987" max="119987" step="1" required></label></div>
+        <pre><code id="math-code"></code></pre>
+      </div>
+      <div class="preview math-preview"><p class="preview-label">MONTH ARITHMETIC</p><p class="math-from" id="math-from"></p><p class="math-result" id="math-result" aria-live="polite"></p><p id="math-caption"></p></div>
+    </section>
+    <section class="example" aria-labelledby="locale-title">
+      <div class="example-copy"><p class="number">04 / A LOCAL TOUCH</p><h2 id="locale-title">Speak your users’ language.</h2><p>Get weekday labels using the browser’s Intl support. Set the language, label width, and first day independently.</p>
+        <div class="controls"><label>Language<select id="labels-locale"><option value="fr-FR">Français</option><option value="en-US">English (US)</option><option value="ta-IN">தமிழ்</option><option value="ja-JP">日本語</option><option value="ar-EG">العربية</option></select></label><label>Label width<select id="labels-width"><option value="short">Short</option><option value="long">Long</option><option value="narrow">Narrow</option></select></label><label>Week starts<select id="labels-week"><option value="1">Monday</option><option value="0">Sunday</option><option value="6">Saturday</option></select></label></div>
+        <pre><code id="labels-code"></code></pre>
+      </div>
+      <div class="preview"><p class="preview-label">LOCALIZED LABELS</p><div class="label-list" id="labels-view" aria-live="polite"></div></div>
+    </section>
+    <section class="get-started"><div><p class="eyebrow">BUILD SOMETHING WITH IT</p><h2>Small API. Plenty of possibilities.</h2><p>Dates use local civil time. Months are zero-based, just like JavaScript’s Date.</p></div><div><pre><code>import { getMonthGrid } from 'monthloom';
+
+const weeks = getMonthGrid(2024, 1);</code></pre><a href="https://github.com/goudam-jm/calendarJS#readme">Read the API & installation guide ↗</a></div></section>
+  </main>
+  <footer class="wrap"><span>Monthloom · MIT licensed</span><span>Built from the library in this repository. <a href="https://github.com/goudam-jm/calendarJS/tree/modernize-package/docs">View demo source ↗</a></span></footer>
+</body>
+</html>
