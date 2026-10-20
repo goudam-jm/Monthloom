@@ -21,7 +21,8 @@
   },
   "files": [
     "dist",
-    "src/styles.css"
+    "src/styles.css",
+    "RELEASING.md"
   ],
   "sideEffects": [
     "**/*.css"
@@ -55,5 +56,8 @@
     "access": "public",
     "registry": "https://registry.npmjs.org/"
   },
-  "homepage": "https://goudam-jm.github.io/Monthloom/"
+  "homepage": "https://goudam-jm.github.io/Monthloom/",
+  "bugs": {
+    "url": "https://github.com/goudam-jm/Monthloom/issues"
+  }
 }

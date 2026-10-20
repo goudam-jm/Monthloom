@@ -18,7 +18,7 @@ npm view monthloom version
 
 The package's `prepublishOnly` hook runs the build and tests again before publication. `prepack` rebuilds the distributable. Package contents are restricted to the built exports, declarations, stylesheet, README, license, and manifest. Runtime dependencies are empty.
 
-The initial 0.1.0 release can be bootstrapped manually from the PR branch once its commit is pushed. Merge that same commit into the default branch before starting the automated release cadence.
+Publish the initial 0.1.0 release manually from the clean, pushed default branch. Configure trusted publishing afterward for subsequent releases.
 
 ## Enable trusted publishing after bootstrap
 
