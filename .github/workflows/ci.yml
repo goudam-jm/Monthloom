@@ -19,4 +19,5 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run check
+      - run: npm run size
       - run: npm pack --dry-run

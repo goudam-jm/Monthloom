@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Three runnable Monthloom recipes: booking availability, habit tracking, and events. No UI framework required.">
+  <title>Monthloom recipes — vanilla JavaScript</title>
+  <link rel="stylesheet" href="../styles.css"><script type="module" src="./vanilla.js"></script>
+</head>
+<body>
+  <header class="site-header wrap"><a class="brand" href="../">◧ Monthloom</a><nav aria-label="Main"><a href="../tutorial.html">Tutorial</a><a href="https://github.com/goudam-jm/Monthloom/tree/master/docs/examples">Source</a></nav></header>
+  <main class="wrap article">
+    <p class="eyebrow">VANILLA JAVASCRIPT · THREE RECIPES</p>
+    <h1>One grid.<br>Three uses.</h1>
+    <p>Monthloom supplies the dates. Your application owns availability, selection, habits, and event records. These fictional examples use February 2024 so their behavior stays reproducible.</p>
+    <p id="recipe-status" class="notice" role="status">Try selecting an available day or toggling a habit. Nothing is saved or sent.</p>
+    <section><h2>Booking availability</h2><p>Unavailable weekends are disabled. Selecting a weekday updates app-owned state; this is not a booking service.</p><div id="booking" class="recipe-calendar"></div><pre><code>const unavailable = new Set([3, 4, 10, 11, 17, 18, 24, 25]);
+// In your renderer:
+button.disabled = unavailable.has(date.getDate());
+// Store the chosen date in your application.</code></pre></section>
+    <section><h2>Habit tracker</h2><p>Toggle any day. Pressed buttons indicate completion; state lives in memory and resets on reload.</p><div id="habits" class="recipe-calendar"></div><pre><code>const completed = new Set([1, 2, 5, 6, 8]);
+// In your click handler:
+if (completed.has(day)) completed.delete(day);
+else completed.add(day);
+button.setAttribute('aria-pressed', String(completed.has(day)));</code></pre></section>
+    <section><h2>Event-marked month</h2><p>Attach your event data to dates. Monthloom does not fetch events, schedule meetings, or expand recurrence rules.</p><div id="events" class="recipe-calendar"></div><pre><code>const events = new Map([[7, 'Design review'], [15, 'Community meetup']]);
+// Render events.get(date.getDate()) beside the day.</code></pre></section>
+    <p>These day-number keys are scoped to this single demo month. For a multi-month app, use full local year-month-day keys.</p>
+    <p><a href="./react.html">React example</a> · <a href="./vue.html">Vue example</a> · <a href="../tutorial.html">Build it step by step</a></p>
+  </main>
+</body>
+</html>

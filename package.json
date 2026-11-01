@@ -1,7 +1,7 @@
 {
   "name": "monthloom",
   "version": "0.1.0",
-  "description": "Dependency-free calendar grids, month navigation, and an optional browser widget.",
+  "description": "Build custom month calendars. Zero runtime dependencies. Any framework.",
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
@@ -33,10 +33,12 @@
   "scripts": {
     "build": "node scripts/build.js",
     "test": "node --test",
-    "check": "npm run build && npm test",
+    "check": "npm run build && npm run build:pages && npm test && npm run check:types",
     "prepack": "npm run build",
     "prepublishOnly": "npm run check",
-    "build:pages": "node scripts/build-pages.js"
+    "build:pages": "node scripts/build-pages.js",
+    "check:types": "tsc -p test/types/tsconfig.json",
+    "size": "npm run build && node scripts/measure-size.js"
   },
   "repository": {
     "type": "git",
@@ -44,13 +46,18 @@
   },
   "keywords": [
     "calendar",
-    "date",
-    "month",
+    "month-grid",
+    "headless",
+    "date-utils",
+    "vanilla-javascript",
+    "typescript",
     "datepicker"
   ],
   "license": "MIT",
   "devDependencies": {
-    "linkedom": "0.18.13"
+    "esbuild": "0.28.2",
+    "linkedom": "0.18.13",
+    "typescript": "7.0.2"
   },
   "publishConfig": {
     "access": "public",

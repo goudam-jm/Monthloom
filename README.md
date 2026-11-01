@@ -1,40 +1,68 @@
 # Monthloom
 
-A small, dependency-free calendar library with an optional vanilla JavaScript widget. Use the calendar data in any framework, on the server, or directly in a browser.
+**Build custom month calendars. Zero runtime dependencies. Any framework.**
 
-## Interactive demo
+[![npm version](https://img.shields.io/npm/v/monthloom)](https://www.npmjs.com/package/monthloom)
+[![npm unpacked size](https://img.shields.io/npm/unpacked-size/monthloom)](https://www.npmjs.com/package/monthloom)
+[![Runtime dependencies: 0](https://img.shields.io/badge/runtime_dependencies-0-brightgreen)](https://www.npmjs.com/package/monthloom?activeTab=dependencies)
+[![CI](https://github.com/goudam-jm/Monthloom/actions/workflows/ci.yml/badge.svg)](https://github.com/goudam-jm/Monthloom/actions/workflows/ci.yml)
+[![MIT license](https://img.shields.io/npm/l/monthloom)](./LICENSE)
 
-[Explore the GitHub Pages playground](https://goudam-jm.github.io/Monthloom/): try the browser widget, configure headless grids, add months to dates, and localize weekday labels. Every example includes code that follows its controls.
-
-Build locally with `npm run build:pages`, then serve `_site/` using a static HTTP server. The demo bundles the repository's source modules and requires no npm publication or CDN. `.github/workflows/pages.yml` deploys changes from `master`. GitHub Pages must use GitHub Actions as its build source, with the `github-pages` environment allowing the deployment branch.
-
-## Install
-
-Install the package with `npm install monthloom`. To build and try a local package:
+Get a month as an array of weeks, then render it with your own markup and state. Use it in React, Vue, vanilla JavaScript, or on the server. An optional browser widget is available when you want a simple calendar without building a view.
 
 ```sh
-npm ci
-npm run check
-npm pack
-# In your consuming project:
-npm install /path/to/monthloom-0.1.0.tgz
+npm install monthloom
 ```
-
-## Calendar data
 
 ```js
-import { Calendar, getMonthGrid, addMonths } from 'monthloom';
+import { getMonthGrid } from 'monthloom';
 
-// Months are zero-based: February = 1.
+// February 2024. Months are zero-based, like JavaScript Date.
 const weeks = getMonthGrid(2024, 1, { weekStartsOn: 1 });
-// Date[][] with null for cells outside the month.
-const calendar = new Calendar(new Date(2024, 11, 1));
-calendar.next().getMonthString(); // "January"
-calendar.getMonthString('fr'); // "décembre"
-addMonths(new Date(2024, 0, 31), 1); // February 29
+console.log(weeks[0].map(date => date?.getDate() ?? null));
+// [null, null, null, 1, 2, 3, 4]
 ```
 
-CommonJS is supported through `require('monthloom')`. TypeScript declarations are included. Importing either entry point is safe without a browser.
+**[Playground](https://goudam-jm.github.io/Monthloom/) · [Recipes](https://goudam-jm.github.io/Monthloom/examples/vanilla.html) · [Step-by-step tutorial](https://goudam-jm.github.io/Monthloom/tutorial.html)**
+
+## Choose Monthloom when
+
+You want month grids and navigation, but want to own the UI, styling, and selection state. It handles week padding, leap years, adjacent-month days, and clamped month arithmetic.
+
+- Compared with [calendarize](https://github.com/lukeed/calendarize), Monthloom returns `Date | null` cells rather than day numbers, and includes fixed six-week layouts, localized labels, month navigation, and an optional widget.
+- Already using date-fns or Day.js for general date calculations? Keep them if they meet your needs; Monthloom focuses on month-shaped data.
+- Need a full date picker with range selection, disabled-date rules, and calendar keyboard navigation? Consider [React DayPicker](https://daypicker.dev/). Monthloom's widget does not implement those features.
+- Need event scheduling or resource timelines? Use a scheduling library. Monthloom has no scheduling engine.
+
+## Runnable examples
+
+No framework adapter packages are needed. Each example has a complete source file:
+
+- **[Vanilla JavaScript](https://goudam-jm.github.io/Monthloom/examples/vanilla.html)** — three custom calendar recipes. [Source](./docs/examples/recipes.js).
+- **[React](https://goudam-jm.github.io/Monthloom/examples/react.html)** — month navigation and app-owned selection. [Source](./docs/examples/react.js).
+- **[Vue](https://goudam-jm.github.io/Monthloom/examples/vue.html)** — the same headless approach with reactive state. [Source](./docs/examples/vue.js).
+
+The hosted examples import the repository's source modules. React and Vue load from pinned third-party CDN URLs. In a bundled app, replace `../lib/index.js` with `monthloom` and install your framework normally. To run examples locally: `npm ci`, `npm run build:pages`, then `python3 -m http.server --directory _site`. Open the printed URL and choose an example.
+
+## Three recipes, one core
+
+- **Booking availability:** disable unavailable days and store a selected date in your app. The example does not reserve anything or validate server availability.
+- **Habit tracker:** toggle completed days using an app-owned `Set` and `aria-pressed` buttons. Demo state resets on reload.
+- **Event-marked month:** attach event records to dates and render them beside the day. Fetching, recurrence, and scheduling stay in your app.
+
+[Try all three](https://goudam-jm.github.io/Monthloom/examples/vanilla.html) or [follow the tutorial](https://goudam-jm.github.io/Monthloom/tutorial.html).
+
+## Calendar utilities
+
+```js
+import { Calendar, addMonths, getWeekdayLabels } from 'monthloom';
+
+new Calendar(new Date(2024, 11, 1)).next().getMonthString(); // "January"
+getWeekdayLabels({ locale: 'fr-FR', weekStartsOn: 1 });
+addMonths(new Date(2024, 0, 31), 1); // February 29, 2024
+```
+
+CommonJS works through `require('monthloom')`. TypeScript declarations are included. Both JavaScript entry points can be imported without a browser.
 
 ### API
 
@@ -68,17 +96,34 @@ The widget accepts all grid options. It uses native buttons, labeled navigation,
 
 Without a bundler, serve the repository with a static HTTP server and import `./src/dom.js` as a module; load `./src/styles.css` through a stylesheet link.
 
+## Package size and dependencies
+
+The size badge reads the latest published **unpacked npm package** size, including documentation, declarations, and both module formats. It is not the browser download size. Version 0.1.0 reports **25,615 bytes unpacked** in the [npm registry metadata](https://registry.npmjs.org/monthloom/0.1.0).
+
+There are **zero runtime, optional, or peer dependencies**; CI checks this claim. Development tools are not runtime dependencies.
+
+Run `npm run size` for the current source's minified ESM and gzip byte counts. The command uses the locked esbuild version, bundles all exports, and targets ES2022. It measures the core and the widget including its imported core separately; stylesheet bytes are excluded. For the unchanged 0.1.0 library source, this toolchain measures **875 bytes gzip for all core exports**, or **1,592 bytes gzip for the widget plus core**. These are measurement snapshots; rerun after source or tooling changes. Individual named imports can produce different bundles. No "smallest" or "fastest" claim is made.
+
+## Compatibility and limits
+
+- Runtime: Node.js 20+; CI currently tests Node.js 22 and 24 in UTC, Los Angeles, and Auckland time zones.
+- Browser code requires ES modules, private class fields, and Intl with `dateStyle`. The widget additionally requires DOM APIs such as `replaceChildren`. Use a modern evergreen browser; a cross-browser release matrix has not been verified.
+- Gregorian calendar only. Locale changes labels, not the underlying calendar system. Dates are local civil dates, not a time-zone conversion API.
+- TypeScript: strict ESM and CommonJS consumer fixtures are compiled in CI. A minimum supported TypeScript version has not been established.
+- The optional widget has native buttons, table headers, and date labels, but no arrow-key grid navigation, persisted selection, range selection, disabled-date rules, or full accessibility certification. Navigation labels are currently English.
+
 ## Development
 
-Node.js 22 or newer is recommended for development. Runtime package exports support Node.js 20+ and modern browsers with ES modules and `Intl`.
+Use Node.js 24 for development; install the locked tooling with `npm ci`.
 
 ```sh
 npm ci
-npm run check
-npm pack --dry-run
+npm run check       # build, Pages build, runtime tests, TypeScript consumers
+npm run size        # reproducible minified/gzip measurements
+npm pack --dry-run  # inspect package contents
 ```
 
-The build emits ESM, CommonJS, and declarations into `dist/`. Tests cover a 400-year Gregorian cycle, leap years, month boundaries, locales, DOM lifecycle, and both package entry points. CI runs checks in multiple time zones.
+The library build emits ESM, CommonJS, and declarations into `dist/`. Tests cover a 400-year Gregorian cycle, month boundaries, locales, DOM lifecycle, both package entry points, recipe state, and Pages link resolution. The Pages build copies the actual source modules; it does not rely on a CDN copy of Monthloom. Deployments run from `master`.
 
 ## Migrating from the prototype
 
@@ -86,6 +131,6 @@ The original browser demo is preserved in `legacy/index.html`. The package repla
 
 ## Releases and license
 
-MIT © 2026 Goudam J M. See [LICENSE](./LICENSE).
+[Release notes](https://github.com/goudam-jm/Monthloom/blob/master/CHANGELOG.md) · [Publishing guide](./RELEASING.md) · [Report an issue](https://github.com/goudam-jm/Monthloom/issues)
 
-See [RELEASING.md](./RELEASING.md) for the first publish, trusted publishing setup, versioning, and the release workflow.
+MIT © 2026 Goudam J M. See [LICENSE](./LICENSE).

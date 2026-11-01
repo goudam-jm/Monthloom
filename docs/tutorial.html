@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Build a custom month calendar without a UI framework — Monthloom</title>
+  <meta name="description" content="A practical Monthloom tutorial: render a month grid, attach your event data, and adapt it for availability or habit tracking with vanilla JavaScript.">
+  <link rel="canonical" href="https://goudam-jm.github.io/Monthloom/tutorial.html">
+  <meta property="og:title" content="Build a custom month calendar without a UI framework">
+  <meta property="og:description" content="Keep your markup, styling, and state. Use Monthloom for the month-shaped data.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://goudam-jm.github.io/Monthloom/tutorial.html">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <header class="site-header wrap"><a class="brand" href="./">◧ Monthloom</a><nav aria-label="Main"><a href="./examples/vanilla.html">Recipes</a><a href="https://github.com/goudam-jm/Monthloom">GitHub</a></nav></header>
+  <main class="wrap article">
+    <p class="eyebrow">TUTORIAL · VANILLA JAVASCRIPT</p>
+    <h1>Build a custom month calendar without a UI framework.</h1>
+    <p>You need a calendar-shaped view: seven columns, the right number of days, and room for your data. You want your own HTML and styling, not a date-picker component's selection model. This is the narrow problem Monthloom solves.</p>
+    <p>We will build a February 2024 event calendar, then adapt the same dates for booking availability and habits. All event and availability records below are fictional demo data.</p>
+    <p><a class="primary" href="./examples/vanilla.html">Try the working recipes</a></p>
+    <section><h2>1. Install and ask for weeks</h2>
+      <pre><code>npm install monthloom</code></pre>
+      <p>In your project's JavaScript module:</p>
+      <pre><code>import { getMonthGrid } from 'monthloom';
+
+const weeks = getMonthGrid(2024, 1, { weekStartsOn: 1 });
+console.log(weeks[0].map(date =&gt; date?.getDate() ?? null));
+// [null, null, null, 1, 2, 3, 4]</code></pre>
+      <p>Months are zero-based, so <code>1</code> means February. Each week has seven cells. Cells outside the month are <code>null</code>; the others are local <code>Date</code> objects. Leap-year arithmetic and week padding are handled for you.</p>
+      <p>The default returns only the required rows. Add <code>fixedWeeks: true</code> for six rows, or <code>showOutsideDays: true</code> for adjacent-month dates. If you show adjacent dates, use a full year-month-day key for records.</p>
+    </section>
+    <section><h2>2. Render your own markup</h2>
+      <p>Add <code>&lt;div id="calendar"&gt;&lt;/div&gt;</code> to your HTML. This complete module builds a table, accessible column headers, and event labels. It uses <code>textContent</code>, so event text is not interpreted as HTML.</p>
+      <pre><code>import { getMonthGrid, getWeekdayLabels } from &#x27;monthloom&#x27;;
+
+const table = document.createElement(&#x27;table&#x27;);
+const caption = document.createElement(&#x27;caption&#x27;);
+caption.textContent = &#x27;February 2024&#x27;;
+table.append(caption);
+
+const head = document.createElement(&#x27;thead&#x27;);
+const labels = document.createElement(&#x27;tr&#x27;);
+for (const label of getWeekdayLabels({ weekStartsOn: 1 })) {
+  const th = document.createElement(&#x27;th&#x27;);
+  th.scope = &#x27;col&#x27;;
+  th.textContent = label;
+  labels.append(th);
+}
+head.append(labels);
+table.append(head);
+
+const events = new Map([[7, &#x27;Design review&#x27;], [22, &#x27;Release day&#x27;]]);
+const body = document.createElement(&#x27;tbody&#x27;);
+for (const week of getMonthGrid(2024, 1, { weekStartsOn: 1 })) {
+  const row = document.createElement(&#x27;tr&#x27;);
+  for (const date of week) {
+    const cell = document.createElement(&#x27;td&#x27;);
+    if (date) {
+      const event = events.get(date.getDate());
+      cell.textContent = `${date.getDate()}${event ? &#x27;: &#x27; + event : &#x27;&#x27;}`;
+    }
+    row.append(cell);
+  }
+  body.append(row);
+}
+table.append(body);
+document.querySelector(&#x27;#calendar&#x27;).replaceChildren(table);</code></pre>
+      <p>The installed package exports work in bundlers such as Vite. To try this without a bundler, use our <a href="./examples/vanilla.html">hosted example</a>, which loads local browser modules, or clone the repository, run <code>npm ci &amp;&amp; npm run build:pages</code>, and serve <code>_site/</code> with a static HTTP server.</p>
+    </section>
+    <section><h2>3. Keep application state in your application</h2>
+      <p>For a booking interface, render date buttons and set <code>button.disabled</code> when your availability data marks a date unavailable. Store the selected date yourself. Real reservations still need server-side validation; disabling a browser button is not an availability guarantee.</p>
+      <p>For a habit tracker, keep completed dates in a <code>Set</code>. A click adds or removes a date, then updates <code>aria-pressed</code>. Our demo uses memory only; choose your own persistence layer if you need one.</p>
+      <p>For events, look up records while rendering each date. The example uses day numbers because it covers one fixed month. In a multi-month app, use a local date key:</p>
+      <pre><code>const key = date =&gt; [
+  String(date.getFullYear()).padStart(4, '0'),
+  String(date.getMonth() + 1).padStart(2, '0'),
+  String(date.getDate()).padStart(2, '0')
+].join('-');</code></pre>
+      <p>Avoid <code>toISOString().slice(0, 10)</code> for local date keys: it converts the date to UTC, which can change the day.</p>
+    </section>
+    <section><h2>4. Move between months</h2>
+      <pre><code>import { Calendar } from 'monthloom';
+
+let calendar = new Calendar(new Date(2024, 11, 1));
+calendar = calendar.next(); // January 2025
+const weeks = calendar.getWeeks({ weekStartsOn: 1 });</code></pre>
+      <p><code>next()</code> and <code>previous()</code> return new calendars. Render again when your state changes. In Vue, use <code>shallowRef</code> for this class instance so its private fields are not wrapped in a reactive proxy. The <a href="./examples/react.html">React example</a> and <a href="./examples/vue.html">Vue example</a> show full navigation and selection without framework adapter packages.</p>
+    </section>
+    <section><h2>Know the boundary</h2>
+      <p>Monthloom generates Gregorian calendar data. It does not schedule events, expand recurrence rules, convert time zones, or implement a complete accessible date-picker interaction model. Its optional widget supplies basic month navigation and a date-selection callback.</p>
+      <p>That small scope is deliberate: use it when you want to own the interface. Choose a full picker or scheduler when you need those behaviors included.</p>
+    </section>
+    <p><a href="./examples/vanilla.html">Run the three recipes</a> · <a href="https://github.com/goudam-jm/Monthloom#readme">Read the API</a> · <a href="https://www.npmjs.com/package/monthloom">Install from npm</a></p>
+  </main>
+</body>
+</html>
